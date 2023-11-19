@@ -61,12 +61,42 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/booking');
 const Room = require('../models/room'); // Import the Room model
+const stripe = require('stripe') ('sk_test_51OBAMTSF4g5RXY8R109y4Lxae4DZvZwvPib7wzpVES6n07mbONZSCIs77BcbI4v3nIxTP8InV7cr2DHoXy2JlBRD00PsIRqJF5')
+const { v4: uuidv4 } = require('uuid');
 
+
+
+
+
+
+
+// /////////////////////////////////////bookroom/////////////////////////////////
 router.post('/bookroom', async (req, res) => {
-  const { room, roomid, userid, fromdate, todate, totalamount, totaldays } = req.body;
+  const { room, roomid, userid, fromdate, todate, totalamount, totaldays,token,rentperday } = req.body;
   console.log('Request Body:', req.body);
 
-  try {
+ try{
+  const customer= await stripe.customers.create({
+    email:token.email,
+    source:token.id
+  })
+
+  const payment = await stripe.charges.create({
+  
+   amount : totalamount*100,
+   customer:customer.id,
+   currency:'inr',
+   receipt_email:token.email
+   
+  },
+  {
+    idempotencyKey: uuidv4(),
+  }
+  );
+
+if(payment){
+
+  
     // Convert totalamount to a number
     const parsedTotalAmount = parseFloat(totalamount);
 
@@ -79,7 +109,8 @@ router.post('/bookroom', async (req, res) => {
       todate: todate,
       totalamount: parsedTotalAmount, // Assign parsed totalamount
       totaldays: totaldays,
-      transactionId: '1234',
+      // transactionId: '123',
+      transactionId:payment.id,
       status: 'Booked', // Define the booking status
     });
 
@@ -93,17 +124,21 @@ router.post('/bookroom', async (req, res) => {
       fromdate: fromdate,
       todate: todate,
       userid: userid, // Corrected to userid
+      rentperday:rentperday,
       status: booking.status,
     });
 
-    await roomTemp.save(); // You missed () for the save function
+    await roomTemp.save(); // You missed () for the save function   
 
-    res.status(201).json({ message: 'Booking successful' });
-  } catch (error) {
-    console.error('Error creating booking:', error);
-    res.status(500).json({ error: 'An error occurred while booking the room' });
-  }
+}
+res.send('payment successful, your room is booked')
+ }catch(error){
+return res.status(400).json({error})
+ }
 });
+
+
+// //////////////////////////////////getbooking by userid/////////////////////////////////////////////////////////////////////
 
 router.post('/getbookingsbyuserid', async (req, res) => {
   const userid = req.body.userid;
@@ -116,6 +151,8 @@ router.post('/getbookingsbyuserid', async (req, res) => {
   }
 });
 
+
+// ////////////////////////cancelbooking///////////////////////////
 router.post("/cancelbooking",async(req,res)=>{
   const {bookingid, roomid} = req.body
   try{
@@ -134,6 +171,8 @@ res.send(error)
   }
 })
 
+/////////////////////////////////getallbooking///////////////////////////////////////////////////////////////
+
 router.get("/getallbookings", async (req, res) => {
   try {
     const bookings = await Booking.find();
@@ -142,6 +181,7 @@ router.get("/getallbookings", async (req, res) => {
     res.status(500).json(error);
   }
 });
+
 
 
 

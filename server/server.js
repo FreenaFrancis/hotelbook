@@ -11,6 +11,7 @@ const app = express();
 var mongoURI= 'mongodb+srv://freenafrancis2000:xqBRClyG9po3murZ@cluster0.ygk9lht.mongodb.net/'
 
 
+
 mongoose.connect(mongoURI,{
     useNewUrlParser:true,
     useUnifiedTopology:true,
@@ -32,6 +33,8 @@ const port = process.env.PORT || 5000;
 
 
 app.listen(port,()=> console.log ('server is running'))
+
+
 
 
 

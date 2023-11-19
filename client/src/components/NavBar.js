@@ -9,7 +9,7 @@ function NavBar() {
   }
   return (
     <div>
-      <nav className="navbar navbar-expand-lg">
+      <nav  className="navbar navbar-expand-lg" >
         <a className="navbar-brand" href="/home">
           HEYHOTEL
         </a>
@@ -53,6 +53,11 @@ function NavBar() {
           </ul>
         </div>
       </nav>
+{/* <div>
+  <img style={{backgroundSize:'cover',width:'100%'}} src='https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aG90ZWwlMjBib29raW5nfGVufDB8fDB8fHww'alt=''></img>
+  <button className='btn ' style={{marginLeft:'700px',marginTop:'-1000px'}}>Get Started</button>
+</div> */}
+
     </div>
   );
 }

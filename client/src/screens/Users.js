@@ -40,7 +40,7 @@ function Users() {
           <tbody>
             {users.map((user) => (
               <tr key={user._id}>
-                <td>{user._id}</td>
+                {/* <td>{user._id}</td> */}
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.isAdmin ? 'Yes' : 'No'}</td> {/* Corrected to 'Yes' and 'No' */}

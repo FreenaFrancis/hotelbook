@@ -5,9 +5,11 @@ import HomeScreen from './screens/HomeScreen';
 import Bookingscreen from './screens/Bookingscreen';
 import RegisterScreen from './screens/RegisterScreen';
 import Loginscreen from './screens/Loginscreen';
-import ProfileScreen from './screens/ProfileScreen';
+import ProfileScreen, { Cart } from './screens/ProfileScreen';
 import Adminscreen from './screens/Adminscreen';
 
+import AddCart from './components/AddCart';
+import UpdateRoom from './screens/updateRoom';
 function App() {
   return (
     <div className="App">
@@ -22,6 +24,8 @@ function App() {
           <Route path='/login' element={<Loginscreen />} />
           <Route path='/profile' element={<ProfileScreen />} />
           <Route path='/admin' element={<Adminscreen />} />
+          <Route path='/cart/:roomid' element={<AddCart/>} />
+          <Route path='/update/:roomid' element={<UpdateRoom/>} />
         </Routes>
       </BrowserRouter>
     </div>

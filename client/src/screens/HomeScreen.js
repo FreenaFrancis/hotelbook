@@ -1,74 +1,4 @@
-// import React, { useEffect, useState } from 'react';
-// import axios from 'axios';
-// import Room from '../components/Room';
-// import Loader from '../components/Loader';
-// import Error from '../components/Error';
-// import { DatePicker } from 'antd';
-// import moment from 'moment';
 
-// function HomeScreen() {
-//   const [rooms, setRooms] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(false);
-//   const [fromdate, setFromdate] = useState();
-//   const [todate, setTodate] = useState();
-
-//   const { RangePicker } = DatePicker;
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const response = await axios.get('http://localhost:5000/api/rooms/getallRooms');
-//         const data = response.data;
-//         setRooms(data);
-//         setLoading(false);
-//       } catch (error) {
-//         setError(true);
-//         console.error(error);
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchData();
-//   }, []);
-
-//   const filterByDate = (dates) => {
-//     // if (dates.length === 2) {
-//       setFromdate(moment(dates[0]).format('DD-MM-YYYY'));
-//       setTodate(moment(dates[1]).format('DD-MM-YYYY'));
-//     //   console.log(fromdate);
-//     //   console.log(todate);
-//     // // }
-//   };
-
-//   return (
-//     <div className='container'>
-//       <div className='row mt-5'>
-//         <div className='col-md-3'>
-//           <RangePicker format='DD-MM-YYYY' onChange={filterByDate} />
-//         </div>
-//       </div>
-
-//       <div className='row justify-content-center mt-5'>
-//         {loading ? (
-//           <Loader />
-//         ) : error ? (
-//           <Error />
-//         ) : rooms.length > 0 ? (
-//           rooms.map((room) => (
-//             <div className='col-md-9 mt-2' key={room.id}>
-//               <Room room={room} fromdate={fromdate} todate={todate} />
-//             </div>
-//           ))
-//         ) : (
-//           <p>No rooms available.</p>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default HomeScreen;
 
 
 import React, { useEffect, useState } from 'react';
@@ -139,6 +69,8 @@ function HomeScreen() {
     const tempRooms = duplicate.filter(room => room.name.toLowerCase().includes(searchkey.toLowerCase()));
     setRooms(tempRooms);
   };
+
+
   const filterByType = (e) => {
     setType(e)
   if(e!=='all'){
@@ -175,6 +107,7 @@ function HomeScreen() {
             <option value='all'>All</option>
             <option value='delux'>Delux</option>
             <option value='non-delux'>Non-Delux</option>
+            <option value='super-delux'>Super-delux</option>
           </select>
         </div>
       </div>

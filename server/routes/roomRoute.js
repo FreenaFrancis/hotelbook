@@ -101,4 +101,64 @@ router.post('/addroom', async (req, res) => {
     }
 });
 
+
+// router.post('/getroomid', async (req, res) => {
+//     const roomid = req.body.roomid;
+
+//     try {
+//         const room = await Room.findBYId({ _id: roomid,maxxount,phonenumber,imageurls,description });
+//         return res.json(room);
+//     } catch (error) {
+//         return res.status(400).json({ message: error.message });
+//     }
+// });
+
+// Assuming you have something like this in your Express backend
+router.get('/getroomsById/:id', async (req, res) => {
+    const roomid = req.params.id;
+
+    try {
+        const room = await Room.findById(roomid); 
+        return res.json(room);
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
+    }
+});
+
+  router.post('/cart', async (req, res) => {
+    const roomid = req.body.roomid;
+  
+    try {
+      const room = await Room.findById(roomid);
+      return res.json(room);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  });
+
+
+  router.delete('/deleteRoom/:id',(req,res)=>{
+    const id=req.params.roomid;
+    Room.findByIdAndDelete({_id: id})
+    .then(res => res.json(res))
+    .catch(err => res.json(err))
+  })
+  
+
+  router.put('/updateRoom/:id', async (req, res) => {
+    try {
+      const id = req.params.roomid;
+      const updatedRoom = await Room.findByIdAndUpdate(id, req.body, { new: true });
+  
+      if (!updatedRoom) {
+        return res.status(404).json({ message: 'Room not found' });
+      }
+  
+      res.json(updatedRoom);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  });
+
 module.exports = router;
