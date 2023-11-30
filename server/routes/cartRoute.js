@@ -29,20 +29,26 @@ router.post('/addToCart', (req, res) => {
 //         .catch(err => res.json(err));
 // });
 
-router.get('/getcart', (req, res) => {
-    // const id = req.params.id;
-    cart.find()
+router.get('/getcart', async (req, res) => {
+    try {
+      const cartItems = await cart.find();
+      res.json(cartItems);
+    } catch (error) {
+      console.error('Error fetching cart items:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  
+
+
+  router.delete('/deleteCart/:id', (req, res) => {
+    const { id } = req.params;
+
+    cart.findByIdAndDelete({ _id: id })
         .then(result => res.json(result))
         .catch(err => res.json(err));
 });
 
-
-router.delete('/deleteCart/:id',(req,res)=> {
-    const {id}=req.params
-    cartModel.findByIdAndDelete({_id:id})
-    .then(result =>res.json(result))
-    .catch(err =>res.json(err))
-})
 
 module.exports=router;
 
