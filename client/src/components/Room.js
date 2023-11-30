@@ -1,16 +1,61 @@
+// Room.js
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Carousel from 'react-bootstrap/Carousel';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 function Room({ room, fromdate, todate }) {
-  const id=useParams()
+  const { roomid } = useParams();
   const [show, setShow] = useState(false);
+  const [cartData, setCartData] = useState({
+    name: '',
+    maxcount: 0,
+    description: '',
+    price: 0,
+    image: '',
+  });
+const navigate=useNavigate();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const addCart = (e) => {
+    e.preventDefault();
+    axios.post('http://localhost:5000/api/cart/addToCart', {
+      roomid: room._id,
+      name: room.name,
+      maxcount: room.maxcount,
+      description: room.description,
+      price: room.price,
+      image: room.imageurls[0], // Assuming the imageurls is an array, take the first image
+    })
+    .then(result => {
+      console.log(result);
+      navigate('/cart')
+      setCartData(result.data); // Optional: Store the added item in state if needed
+    })
+    .catch(err => console.log(err));
+  }
+  // const addCart = (e) => {
+  //   e.preventDefault();
+  //   axios.post('http://localhost:5000/api/cart/addToCart', {
+  //     roomid: room._id,
+  //     name: room.name,
+  //     maxcount: room.maxcount,
+  //     description: room.description,
+  //     price: room.price,
+  //     image: room.imageurls[0],
+  //   })
+  //   .then(result => {
+  //     console.log(result);
+  //     navigate(`/cart/${result.data._id}`); // Updated navigation to include the cart item id
+  //     setCartData(result.data);
+  //   })
+  //   .catch(err => console.log(err));
+  // }
+  
   return (
     <div className='row bs'>
       <div className='col-md-4'>
@@ -27,15 +72,11 @@ function Room({ room, fromdate, todate }) {
               <Button variant="primary" className='m-2' style={{ backgroundColor: 'black', color: 'white' }}>Book Now</Button>
             </Link>
           )}
-
           <Button variant="primary" style={{ backgroundColor: 'black', color: 'white' }} onClick={handleShow}>View Details</Button>
-
-          <Link to={`cart/${room._id}`}>
-            <Button variant="primary" style={{ backgroundColor: 'black', margin: '2px', color: 'white' }}>Add to Cart</Button>
-          </Link>
+          <Button variant="primary" style={{ backgroundColor: 'black', margin: '2px', color: 'white' }} onClick={addCart}>Add to Cart</Button>
         </div>
       </div>
-{/* carousel view details */}
+      {/* carousel view details */}
       <Modal show={show} onHide={handleClose} size='lg'>
         <Modal.Header closeButton>
           <Modal.Title>{room.name}</Modal.Title>

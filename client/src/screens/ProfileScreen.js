@@ -1,45 +1,43 @@
 
-
 import React, { useEffect, useState } from 'react';
 import { Tabs } from 'antd';
 import axios from 'axios';
 import Loader from '../components/Loader';
 import Error from '../components/Error';
-import Swal from 'sweetalert2'; // Fix the import statement for SweetAlert2
+import Swal from 'sweetalert2';
 import { Divider, Space, Tag } from 'antd';
 import AddCart from '../components/AddCart';
+
 const { TabPane } = Tabs;
 
 function ProfileScreen() {
-  // const user = JSON.parse(localStorage.getItem('currentUser'));
   const user = JSON.parse(localStorage.getItem('currentUser'));
-console.log(user);
 
   useEffect(() => {
     if (!user) {
       window.location.href = '/login';
+    } else {
+      console.log(user); // Add this line to check the user object
     }
   }, []);
 
   return (
     <div className="ml-3-mt-3">
-      <Tabs defaultActiveKey="1" >
-        <TabPane tab="Profile" key="2">
-        <div style={{marginLeft:"100px", border:"2px solid black", width:"500px", padding:"100px"}}>
-       <h1 style={{textDecoration:"underline"}}>Profile</h1>
-          <br />
-         
-          <h3><span>Name</span>: {user.name}</h3>
-          {/* <h1>Email: {user.email}</h1> */}
-          <h3><span>Email</span>: {user.isAdmin ? 'Yes' : 'No'}</h3>
-       </div>
-        </TabPane>
+      <Tabs>
+      <TabPane tab="Profile" key="2">
+  <div style={{ marginLeft: "100px", border: "2px solid black", width: "500px", padding: "100px" }}>
+    <h1 style={{ textDecoration: "underline" }}>Profile</h1>
+    <br />
+    <h3><span>Name</span>: {user.name}</h3>
+    <h3><span>Email</span>: {user.email}</h3> {/* Corrected line */}
+    <h3><span>Is Admin</span>: {user.isAdmin ? 'Yes' : 'No'}</h3>
+  </div>
+</TabPane>
         <TabPane tab="Bookings" key="3">
           <MyBookings user={user} />
         </TabPane>
-
         <TabPane tab="My Cart" key="4">
-        <AddCart/>
+          <AddCart />
         </TabPane>
       </Tabs>
     </div>
@@ -48,10 +46,12 @@ console.log(user);
 
 export default ProfileScreen;
 
+
 // ///////////////////////////////Bookings view//////////////////////////////////////////////////
 
+export function MyBookings() {
+  const user = JSON.parse(localStorage.getItem('currentUser'));
 
-export function MyBookings({ user }) {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -64,18 +64,17 @@ export function MyBookings({ user }) {
           userid: user._id,
         });
         const rooms = response.data;
-        console.log(rooms);
         setBookings(rooms);
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        console.error(error);
         setLoading(false);
         setError(error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [user._id]);
 
   const cancelBooking = async (bookingid, roomid) => {
     try {
@@ -84,18 +83,16 @@ export function MyBookings({ user }) {
       console.log(result);
       setLoading(false);
 
-      // Use SweetAlert2 to show a success message and reload the page
       Swal.fire('Your booking is cancelled successfully').then(() => {
         window.location.reload();
       });
     } catch (error) {
-      console.log(error);
+      console.log("Error cancelling booking:", error.response);
       setLoading(false);
 
-      // Use SweetAlert2 to show an error message
       Swal.fire('Something went wrong');
     }
-  }
+  };
 
   return (
     <div>
@@ -104,27 +101,25 @@ export function MyBookings({ user }) {
           {loading && <Loader />}
           {error && <Error error={error} />}
           {bookings &&
-            bookings.map((booking) => {
-              return <div className='bs'>
+            bookings.map((booking) => (
+              <div className='bs' key={booking._id}>
                 <h1>{booking.room}</h1>
                 <p><b>Booking:</b>{booking._id}</p>
                 <p><b>CheckIn:</b>{booking.fromdate}</p>
                 <p><b>CheckOut:</b>{booking.todate}</p>
-                <p><b>Status:</b>{booking.status === 'cancelled' ? (<Tag color="green">booked</Tag>) : (<Tag color="red">cancel</Tag>)}
-                </p>
-                {booking.status !== 'cancelled' || (
+                <p><b>Status:</b>{booking.status === 'cancelled' ? (<Tag color="red">cancel</Tag>) : (<Tag color="green">success</Tag>)}</p>
+                {booking.status !== 'cancelled' && (
                   <div className='text-right'>
                     <button className='btn btn-primary' onClick={() => { cancelBooking(booking._id, booking.roomid) }}>CANCEL BOOKING</button>
                   </div>
                 )}
               </div>
-            })}
+            ))}
         </div>
       </div>
     </div>
   );
 }
-
 
 // ///////////////////////////////////Cart items//////////////////////////////////////////////////////////////////////
 

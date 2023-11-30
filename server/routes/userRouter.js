@@ -59,7 +59,6 @@
 // module.exports = router;
 
 
-
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');  // Import bcrypt for password hashing
@@ -88,34 +87,6 @@ router.post('/register', async (req, res) => {
 });
 
 // User login
-// router.post('/login', async (req, res) => {
-//   const { email, password } = req.body;
-
-//   try {
-//     const user = await User.findOne({ email });
-
-//     if (user) {
-//       const isPasswordValid = await bcrypt.compare(password, user.password);
-
-//       if (isPasswordValid) {
-//         const userResponse = {
-//           name: user.name,
-//           email: user.email,
-//           isAdmin: user.isAdmin,
-//           _id: user._id
-//         };
-//         res.json(userResponse);
-//       } else {
-//         return res.status(400).json('Login failed');
-//       }
-//     } else {
-//       return res.status(400).json('Login failed');
-//     }
-//   } catch (error) {
-//     return res.status(400).json({ error: error.message });
-//   }
-// });
-// User login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -143,7 +114,6 @@ router.post('/login', async (req, res) => {
     return res.status(400).json({ error: error.message });
   }
 });
-
 
 router.get('/getallusers', async (req, res) => {
   try {

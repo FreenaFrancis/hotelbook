@@ -4,7 +4,7 @@ const cors = require('cors');
 const roomRoute = require('./routes/roomRoute');
 const userRoute = require('./routes/userRouter');
 const bookingRoute = require('./routes/bookingRoute');
-
+const cartRoute=require('./routes/cartRoute')
 const app = express();
 
 
@@ -27,7 +27,7 @@ app.use(cors());
 app.use('/api/rooms', roomRoute)
 app.use('/api/users',userRoute)
 app.use('/api/booking',bookingRoute)
-
+app.use('/api/cart',cartRoute)
 
 const port = process.env.PORT || 5000;
 

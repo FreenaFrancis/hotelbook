@@ -11,7 +11,7 @@ const bookingSchema = mongoose.Schema({
   },
   userid: {
     type: String,
-    required: false,
+    // required: true,
   },
   fromdate: {
     type: String,
@@ -43,3 +43,5 @@ const bookingSchema = mongoose.Schema({
 
 const bookingModel = mongoose.model('Booking', bookingSchema);
 module.exports = bookingModel;
+
+

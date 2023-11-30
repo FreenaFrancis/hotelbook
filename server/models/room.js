@@ -94,8 +94,8 @@ const mongoose = require('mongoose');
 const roomSchema = mongoose.Schema({
     name: {
         type: String,
-        required: true
-    },
+        required: true,
+      },
     maxcount: {
         type: Number,
         required: true
@@ -135,3 +135,4 @@ const roomSchema = mongoose.Schema({
 });
 
 module.exports = mongoose.model('Room', roomSchema);
+

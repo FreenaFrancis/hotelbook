@@ -30,7 +30,8 @@ function Rooms() {
       await axios.delete(`http://localhost:5000/api/rooms/deleteRoom/${id}`);
       // After deletion, fetch the updated room list
       fetchData();
-      window.location.reload()
+      // window.location.reload()
+      window.alert('Room deleted successfully!');
     } catch (error) {
       console.error('Error deleting room:', error);
     }
@@ -66,8 +67,9 @@ function Rooms() {
                   <td>{room.phonenumber}</td>
                   <td>
                   <Link to={`update/${room._id}`}>
-                      <button>Update</button>
-                    </Link>
+  <button>Update</button>
+</Link>
+
                     <button onClick={() => handleDelete(room._id)}>Delete</button>
                   </td>
                 </tr>

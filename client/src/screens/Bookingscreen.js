@@ -5,16 +5,27 @@ import Loader from '../components/Loader';
 import Error from '../components/Error';
 import moment from 'moment';
 import StripeCheckout from 'react-stripe-checkout';
+import swal from 'sweetalert2';
+
 function Bookingscreen() {
   const { roomid, fromdate, todate } = useParams();
 
   const [room, setRoom] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [totalamount, setTotalamount] = useState();
+
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  const userid = currentUser ? currentUser._id : null;
+
+  const formattedFromDate = moment(fromdate, 'DD-MM-YYYY').format('DD-MM-YYYY');
+  const formattedToDate = moment(todate, 'DD-MM-YYYY').format('DD-MM-YYYY');
+
+  const totaldays = moment(formattedToDate, 'DD-MM-YYYY').diff(moment(formattedFromDate, 'DD-MM-YYYY'), 'days') + 1;
 
   useEffect(() => {
     if (!localStorage.getItem('currentUser')) {
-      window.location.href = '/login'; // Use window.location.href to navigate to the login page
+      window.location.href = '/login';
     }
     const fetchData = async () => {
       try {
@@ -23,7 +34,8 @@ function Bookingscreen() {
           roomid: roomid,
         });
         const data = response.data;
-        setTotalamount(data.rentperday*totaldays)
+        // Use a function to update totalamount based on current state
+        setTotalamount(prevTotalAmount => data.rentperday * totaldays);
         setRoom(data);
         setLoading(false);
       } catch (error) {
@@ -34,42 +46,38 @@ function Bookingscreen() {
     };
 
     fetchData();
-  }, [roomid]);
+  }, [roomid, totaldays]);
 
-  const formattedFromDate = moment(fromdate, 'DD-MM-YYYY').format('DD-MM-YYYY');
-  const formattedToDate = moment(todate, 'DD-MM-YYYY').format('DD-MM-YYYY');
-  
-  const totaldays = moment(formattedToDate, 'DD-MM-YYYY').diff(moment(formattedFromDate, 'DD-MM-YYYY'), 'days') + 1;
+  const onToken = async (token) => {
+    // Check if currentUser is available before accessing properties
+    if (!currentUser) {
+      console.error('User not available');
+      return;
+    }
 
-const[totalamount,setTotalamount]=useState()
-const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-const userid = currentUser ? currentUser._id : null;
-// const bookRoom= async()=>{
-
-// }
-
-// ontoken
-
-async function onToken(token){
-console.log(token);
-const bookingDetails={
-  room,
-  roomid,
-    userid:JSON.parse(localStorage.getItem('currentUser'))._id,
- 
-  fromdate,
-  todate,
-  totalamount,
-  totaldays,
-  token
-}
-try{
-  const result = await axios.post('http://localhost:5000/api/booking/bookroom', bookingDetails);
-  console.log(result);
-}catch(error){
-console.log(error);
-}
-}
+    const bookingDetails = {
+      room,
+      roomid,
+      userid: currentUser._id, // Access userid directly from currentUser
+      fromdate,
+      todate,
+      totalamount,
+      totaldays,
+      token,
+    };
+    try {
+      const result = await axios.post('http://localhost:5000/api/booking/bookroom', bookingDetails);
+      console.log(result);
+      setLoading(false);
+      swal.fire('congrats', 'your booking is successful', 'success').then((result) => {
+        window.location.href = '/bookings';
+      });
+    } catch (error) {
+      console.log('Error response:', error.response);
+      console.log(error);
+      swal.fire('sorry', 'something went wrong', 'error');
+    }
+  };
 
   return (
     <div className='m-5'>
@@ -91,7 +99,7 @@ console.log(error);
                 <h1>Booking Details:</h1>
                 <hr />
                 <b>
-                  <p>Name:{JSON.parse(localStorage.getItem('currentUser')).name}</p>
+                  <p>Name:{currentUser.name}</p>
                   <p>From Date: {formattedFromDate}</p>
                   <p>To Date: {formattedToDate}</p>
                   <p>Max Count: {room.maxcount}</p>
@@ -103,22 +111,18 @@ console.log(error);
                   <hr />
                   <p>Total Days: {totaldays}</p>
                   <p>Rent per day: {room.rentperday}</p>
-                  <p>Total Amount:{totalamount}</p>
+                  <p>Total Amount: {totalamount}</p>
                 </b>
               </div>
               <div style={{ float: 'right' }}>
-              {/* <button className='btn btn-primary' onClick={bookRoom}>Pay Now</button> */}
-
-              <StripeCheckout
-              amount={totalamount * 100}
-        token={onToken}
-        currency='INR'
-        stripeKey="pk_test_51OBAMTSF4g5RXY8RPQq6ctc5XrGo5XqXxbztY9MZGvMMuCR5V9jYoZ38jfFOywiYqvZqsYPJEPGmWyhLaBfKEOvt00O4SmIL5H"
-      >
-
-<button className='btn btn-primary'>Pay Now{""}</button>
-</StripeCheckout>
-
+                <StripeCheckout
+                  amount={totalamount * 100}
+                  token={onToken}
+                  currency='INR'
+                  stripeKey="pk_test_51OBAMTSF4g5RXY8RPQq6ctc5XrGo5XqXxbztY9MZGvMMuCR5V9jYoZ38jfFOywiYqvZqsYPJEPGmWyhLaBfKEOvt00O4SmIL5H"
+                >
+                  <button className='btn btn-primary'>Pay Now</button>
+                </StripeCheckout>
               </div>
             </div>
           </div>
@@ -129,6 +133,9 @@ console.log(error);
 }
 
 export default Bookingscreen;
+
+
+
 
 // import React, { useState, useEffect } from 'react';
 // import axios from 'axios';

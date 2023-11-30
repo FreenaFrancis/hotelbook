@@ -56,7 +56,8 @@
 const express = require('express');
 const router = express.Router();
 const Room = require('../models/room');
-
+const mongoose=require('mongoose')
+const cart=require('../models/cart')
 // Get all rooms
 router.get('/getallRooms', async (req, res) => {
     try {
@@ -66,6 +67,7 @@ router.get('/getallRooms', async (req, res) => {
         return res.status(400).json({ message: error.message });
     }
 });
+
 
 // Get a room by ID
 router.post('/getroombyid', async (req, res) => {
@@ -114,40 +116,47 @@ router.post('/addroom', async (req, res) => {
 // });
 
 // Assuming you have something like this in your Express backend
-router.get('/getroomsById/:id', async (req, res) => {
-    const roomid = req.params.id;
-
-    try {
-        const room = await Room.findById(roomid); 
-        return res.json(room);
-    } catch (error) {
-        return res.status(400).json({ message: error.message });
-    }
-});
-
-  router.post('/cart', async (req, res) => {
-    const roomid = req.body.roomid;
+router.get('/getCart/:id', async (req, res) => {
+  const roomid = req.params.id;
+  console.log('Room ID:', roomid);
   
-    try {
-      const room = await Room.findById(roomid);
+  try {
+      const objectId = mongoose.Types.ObjectId(roomid);
+      console.log('ObjectId:', objectId);
+  
+      const room = await Room.findById(objectId);
+      console.log('Room:', room);
+  
       return res.json(room);
-    } catch (error) {
+  } catch (error) {
+      console.error('Error:', error);
       return res.status(400).json({ message: error.message });
-    }
+  }
+})
+
+  // router.post('/cart', async (req, res) => {
+  //   const roomid = req.body.roomid;
+  
+  //   try {
+  //     const room = await Room.findById(roomid);
+  //     return res.json(room);
+  //   } catch (error) {
+  //     return res.status(400).json({ message: error.message });
+  //   }
+  // });
+
+
+  router.delete('/deleteRoom/:id', (req, res) => {
+    const id = req.params.id; // Use the same parameter name as in the route
+    Room.findByIdAndDelete({ _id: id })
+      .then(result => res.json(result))
+      .catch(err => res.json(err));
   });
-
-
-  router.delete('/deleteRoom/:id',(req,res)=>{
-    const id=req.params.roomid;
-    Room.findByIdAndDelete({_id: id})
-    .then(res => res.json(res))
-    .catch(err => res.json(err))
-  })
   
 
   router.put('/updateRoom/:id', async (req, res) => {
     try {
-      const id = req.params.roomid;
+      const id = req.params.id;
       const updatedRoom = await Room.findByIdAndUpdate(id, req.body, { new: true });
   
       if (!updatedRoom) {
@@ -161,4 +170,12 @@ router.get('/getroomsById/:id', async (req, res) => {
     }
   });
 
+  router.get('/roomid/:id', (req,res)=>{
+    const id = req.params.id;
+    Room.findById({_id:id})
+    .then(users => res.json(users))
+    .catch(err=> res.json(err))
+}),
+
+  
 module.exports = router;

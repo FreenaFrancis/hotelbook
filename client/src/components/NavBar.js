@@ -8,7 +8,7 @@ function NavBar() {
     window.location.href='/login'
   }
   return (
-    <div>
+    <div className='na'>
       <nav  className="navbar navbar-expand-lg" >
         <a className="navbar-brand" href="/home">
           HEYHOTEL
