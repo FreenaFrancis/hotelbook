@@ -34,10 +34,10 @@ function ProfileScreen() {
   </div>
 </TabPane>
         <TabPane tab="Bookings" key="3">
-          <MyBookings user={user} />
+          <MyBookings user={user._id} />
         </TabPane>
         <TabPane tab="My Cart" key="4">
-          <AddCart />
+          <AddCart/>
         </TabPane>
       </Tabs>
     </div>
@@ -120,120 +120,3 @@ export function MyBookings() {
     </div>
   );
 }
-
-// ///////////////////////////////////Cart items//////////////////////////////////////////////////////////////////////
-
-// import React, { useEffect, useState } from 'react';
-// import { Tabs } from 'antd';
-// import axios from 'axios';
-// import Loader from '../components/Loader';
-// import Error from '../components/Error';
-// // impport Swal from 'Sweetaler2'
-// import { Divider, Space, Tag } from 'antd';
-// const { TabPane } = Tabs;
-
-// function ProfileScreen() {
-//   const user = JSON.parse(localStorage.getItem('currentUser'));
-
-//   useEffect(() => {
-//     if (!user) {
-//       window.location.href = '/login';
-//     }
-//   }, []);
-
-//   return (
-//     <div className="ml-3-mt-3">
-//       <Tabs defaultActiveKey="1">
-//         <TabPane tab="Profile" key="2">
-//           <h1>Profile</h1>
-//           <br />
-//           <h1>Name: {user.name}</h1>
-//           <h1>Email: {user.email}</h1>
-//           <h1>isAdmin: {user.isAdmin ? 'Yes' : 'No'}</h1>
-//         </TabPane>
-//         <TabPane tab="Bookings" key="3">
-//           <MyBookings user={user} />
-//         </TabPane>
-//       </Tabs>
-//     </div>
-//   );
-// }
-
-// export default ProfileScreen;
-
-// export function MyBookings({ user }) {
-//   const [bookings, setBookings] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null); // Initialize error state as null
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         setLoading(true);
-//         const response = await axios.post('http://localhost:5000/api/booking/getbookingsbyuserid', {
-//           userid: user._id,
-//         });
-//         const rooms = response.data;
-//         console.log(rooms);
-//         setBookings(rooms);
-//         setLoading(false);
-//       } catch (error) {
-//         console.log(error);
-//         setLoading(false);
-//         setError(error); // Set the error state with the error object
-//       }
-//     };
-
-//     fetchData();
-//   }, []);
-
-//   const cancelBooking=async(bookingid,roomid)=>{
-// try{
-// setLoading(true)
-// const result = await axios.post("http://localhost:5000/api/booking/cancelbooking",{bookingid,roomid}).data
-// console.log(result);
-// setLoading(false)
-// // Swal.fire('your booking is cancelled successfully').then(result=>{
-// //   window.location.reload
-// // })
-// }catch(error){
-//   console.log(error);
-//   setLoading(false)
-//   // Swal.fire('something went wrong')
-// }
-
-//   }
-//   return (
-//     <div>
-//       <div className="row">
-//         <div className="col-md-6">
-//           {loading && <Loader />}
-//           {error && <Error error={error} />} {/* Render error message if error state is set */}
-//           {bookings &&
-//             bookings.map((booking) => {
-//               return <div className='bs'>
-//                 <h1>{booking.room}</h1>
-//                 <p><b>Booking:</b>{booking._id}</p>
-//                 <p><b>CheckIn:</b>{booking.fromdate}</p>
-//                 <p><b>CheckOut:</b>{booking.todate}</p>
-//                 <p><b>Status:</b>{booking.status == 'cancelled' ? (<Tag color="red">cancel</Tag>) :( <Tag color="green">booked</Tag>)}</p>
-                
-//                 {/* <div className='text-right'>
-
-//                   <button className='btn btn-primary' onClick={()=>{cancelBooking(booking._id,booking.roomid)}}>CANCEL BOOOKING</button>
-//                 </div> */}
-
-//                 {booking.status !== 'cancelled' && (
-//                  <div className='text-right'>
-
-//                  <button className='btn btn-primary' onClick={()=>{cancelBooking(booking._id,booking.roomid)}}>CANCEL BOOOKING</button>
-//                </div> 
-//                 )}
-                
-//                 </div>
-//             })}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }

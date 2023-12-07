@@ -1,60 +1,4 @@
-// // Example server-side code for /api/booking/bookroom
 
-// const express = require('express');
-// const router = express.Router();
-// const Booking = require('../models/booking');
-// const Room =require('../models/room')
-
-
-// router.post('/bookroom', async (req, res) => {
-//   const { room, roomid, userid, fromdate, todate, totalamount, totaldays } = req.body;
-//   console.log('Request Body:', req.body);
-//   try {
-//     // Convert totalamount to a number
-//     const parsedTotalAmount = parseFloat(totalamount);
-
-//     // Create a new booking
-//     const newBooking = new Booking({
-//       room: room.name,
-//       roomid: room._id,
-//        userid,
-//       fromdate,
-//       todate,
-//       totalamount: parsedTotalAmount,  // Assign parsed totalamount
-//       totaldays,
-//       transactionId: '1234',
-//     });
-
-//     // Save the new booking to the database
-//     const booking = await newBooking.save();
-//     const roomTemp= await Room.findOne({_id:room._id})
-//    roomTemp.currentbookings.push({bookingid: booking._id,
-//     fromdate:fromdate,
-//     todate:todate,
-//      userid:user._id,
-//     status: booking.status
-//   })
-
-//   await roomTemp.save
-//     res.status(201).json({ message: 'Booking successful' });
-//   } catch (error) {
-//     console.error('Error creating booking:', error);
-//     res.status(500).json({ error: 'An error occurred while booking the room' });
-//   }
-// });
-
-// router.post('/getbookingsbyuserid',async(req,res)=>{
-//   const userid = req.body.userid
-// try{
-//   const bookings = await Booking.find({userid: userid})
-//   res.send(bookings)
-// }catch(error){
-//   return res.status(400).json({error})
-// }
-
-// })
-
-// module.exports = router;
 
 
 const express = require('express');
@@ -275,5 +219,6 @@ router.get("/getallbookings", async (req, res) => {
 
 
 module.exports = router;
+
 
 
